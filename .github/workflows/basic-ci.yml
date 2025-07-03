@@ -12,11 +12,11 @@ jobs:
         with:
           node-version: "22"
 
-      - name: install deps
-        uses: npm ci
+      - name: run deps
+        run: npm ci
 
       - name: install test
-        uses: npm run test
+        run: npm run test
 
   build:
     runs-on: ubuntu-latest
