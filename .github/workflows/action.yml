@@ -10,11 +10,10 @@
 #         run: echo "Hello, World!" # run : <cli 명령어>
 
 name: first workflow
-on: push
+on:
+push:
+  branches: [main, develop]
 jobs:
-  push:
-    branches: [main, develop]
-
   # npm run lint
   lint:
     runs-on: ubuntu-latest
