@@ -12,6 +12,9 @@
 name: first workflow
 on: push
 jobs:
+  push:
+    branches: [main, develop]
+
   # npm run lint
   lint:
     runs-on: ubuntu-latest
