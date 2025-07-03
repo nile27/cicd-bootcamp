@@ -12,7 +12,8 @@
 name: first workflow
 on: push
 jobs:
-  build: ubuntu-latest
-  steps:
-    - name: hello_world
-      run: echo "hello_world"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: hello_world
+        run: echo "hello_world"
