@@ -15,7 +15,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: install nodejs
+        uses: actions/setup-node@4
+        with:
+          node-version: "22"
+
+      - name: install deps
+        run: npm ci
+
+      - name: run build
+        run: npm run build
+
+  # npm run lint
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
         uses: actions/checkout@v4
 
       - name: install nodejs
