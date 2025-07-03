@@ -15,8 +15,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: hello_world
-        run: echo "hello_world"
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-        - name: Checkout Code
-          uses: actions/checkout@v4
+      - name: install nodejs
+        uses: actions/setup-node
+        with:
+          node-version: "22"
+
+      - name: install deps
+        run: npm ci
+
+      -name: run build
+        run: npm run build
