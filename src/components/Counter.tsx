@@ -7,7 +7,10 @@ interface CounterProps {
   title?: string;
 }
 
-export default function Counter({ initialValue = 0, title = "Counter" }: CounterProps) {
+export default function Counter({
+  initialValue = 0,
+  title = "Counter",
+}: CounterProps) {
   const [count, setCount] = useState(initialValue);
 
   const increment = () => setCount((prev) => prev + 1);
@@ -31,7 +34,7 @@ export default function Counter({ initialValue = 0, title = "Counter" }: Counter
           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
           data-testid="reset-button"
         >
-          Reset
+          Reset1
         </button>
         <button
           onClick={increment}
