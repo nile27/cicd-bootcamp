@@ -15,6 +15,9 @@ job:
       - name: install deps
         uses: npm ci
 
+      - name: install test
+        uses: npm run test
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +30,7 @@ job:
           node-version: "22"
 
       - name: install deps
-        uses: npm ci
+        run: npm ci
 
-      - name: install build
-        uses: npm run build
+      - name: run build
+        run: npm run build
