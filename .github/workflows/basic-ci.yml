@@ -1,6 +1,6 @@
 name: Basic ci
 on: [push, pull_request]
-job:
+jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
