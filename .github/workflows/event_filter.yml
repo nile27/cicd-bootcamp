@@ -11,3 +11,6 @@ jobs:
       - name: Hello World #step 이름
         run: echo "Hello, World!" # run : <cli 명령어>
 
+  pull_request:
+    types: ["opened", "synchronize", "close"]
+    branches: [main]
