@@ -17,6 +17,8 @@ on:
   push:
     branches: ["main", "develop", "feature"]
   pull_request:
+    types: [opened, synchronize, closed]
+    branches: [main]
 
 jobs:
   Context:
@@ -29,12 +31,12 @@ jobs:
       - name: 저장소 이름
         run: echo "${{ github.sha }}"
 
-  # main 브랜치: "Production 배포 준비" 메시지
-  # develop 브랜치: "Staging 배포 준비" 메시지
-  # feature 브랜치: "Feature 테스트 준비" 메시지
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # main 브랜치: "Production 배포 준비" 메시지
+      # develop 브랜치: "Staging 배포 준비" 메시지
+      # feature 브랜치: "Feature 테스트 준비" 메시지
       - name: Production test
         if: github.ref_name == 'main'
         run: echo "Production 배포 준비"
@@ -47,11 +49,26 @@ jobs:
         if: github.ref_name == 'feature'
         run: echo "Feature 테스트 준비"
 
+        # PR 제목, 번호, 작성자 정보 출력
+        # PR에만 실행되는 특별한 단계
       - name: Handle PR
         if: github.event_name == 'pull_request'
         run: |
           echo "PR Title: ${{ github.event.pull_request.title }}"
           echo "PR Num: ${{ github.event.pull_request.number }}"
           echo "PR name: ${{ github.event.pull_request.user.login }}"
-  # PR 제목, 번호, 작성자 정보 출력
-  # PR에만 실행되는 특별한 단계
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: feature testing
+        if: github.ref_name == 'feature/*'
+        run: echo "feature testing"
+
+      - name: devolop testing
+        if: github.ref_name == 'devolop'
+        run: echo "devolop testing"
+
+      - name: main testing
+        if: github.ref_name == 'main'
+        run: echo "main testing"
