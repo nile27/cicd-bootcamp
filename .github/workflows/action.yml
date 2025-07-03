@@ -17,3 +17,6 @@ jobs:
     steps:
       - name: hello_world
         run: echo "hello_world"
+
+        - name: Checkout Code
+          uses: actions/checkout@v4
