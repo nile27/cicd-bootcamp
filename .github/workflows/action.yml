@@ -1,0 +1,127 @@
+# 워크플로우 -> 자동화 할 작업의 설계서 -> action.yml
+
+# name: first workflow
+# on: push # 이벤트 트리거
+# jobs:
+#   hello_world: # job의 이름
+#     runs-on: ubuntu-latest # job을 실행하는 환경
+#     steps: #step 정의
+#       - name: Hello World #step 이름
+#         run: echo "Hello, World!" # run : <cli 명령어>
+
+# 1. 이슈가 열린다.
+# 2. 이 이슈에 해당하는 PR이 올라온다.
+# 3. PR이 올라가면 test, lint
+# 4. 이슈에 해당하는 PR이 닫히면
+# 5. github action을 활용해서 issue 자동 close
+
+# name: first workflow
+# on:
+#   pull_request:
+#     types: ["closed"]
+#     branches:
+#       - main
+#     paths:
+#       - src/**
+
+# push:
+#   branches: [main, develop]
+#   paths:
+#     - "src/**" # src/** 하위에 있는 파일이 변경되면 워크플로우 실행
+#     - "package.json"
+#     - "!docs/**" # !<파일명> | <디렉토리..> : 특정 파일 및 디렉토리는 워크플로우 실행에서 제외
+
+# jobs:
+#   # job 이름
+#   # npm run lint
+#   lint:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: checkout code
+#         uses: actions/checkout@v4
+
+#       - name: install nodejs
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: "22"
+
+#       - name: install dependencies
+#         run: npm ci
+
+#       - name: run lint
+#         run: npm run lint
+
+#   test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: checkout code
+#         uses: actions/checkout@v4
+
+#       - name: install nodejs
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: "22"
+
+#       - name: install dependencies
+#         run: npm ci
+
+#       - name: run test
+#         run: npm run test
+
+#   # lint -> build
+#   build:
+#     runs-on: ubuntu-latest
+
+#     # builb job 이전에 lint job이 선행되어야함.
+#     # 순차적으로 실행이 되어야함
+#     # 단일 선행작업 -> needs: <job name>
+#     # 복수 선행작업 -> needs: [ <job name 1> , <job name 2> ... ]
+#     needs: [lint, test]
+#     steps:
+#       # 레포지토리 -> 가상환경으로 코드 가져오기
+#       - name: Checkout Code
+#         uses: actions/checkout@v4 # actions -> 재사용가능한 작업
+
+#         # 노드 버전을 맞춰야할 경우에 가상환경에 노드를 추가 설치
+#       - name: install nodejs
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: "22"
+
+#       - name: install deps
+#         run: npm ci # ci -> clean install -> package-lock.json
+
+#       - name: run build
+#         run: npm run build
+
+name: first workflow
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: hello world
+        run: echo "${{ toJson(github) }}"
+
+      - name: 메인 브랜치에서만 실행되는 step
+        if: github.ref_name == 'main'
+        run: echo 'main 브랜치 ${{ github.ref.ref_name}}'
+
+      - name: fesi10 브랜치에서만 실행되는 step
+        if: github.ref_name == 'fesi10'
+        run: echo 'fesi10 브랜치 ${{ github.ref.ref_name}}'
+
+  event:
+    runs-on: ubuntu-latest
+    steps:
+      - name: push event
+        if: github.event_name == 'push'
+        run: echo '${{toJson(github.event)}}}'
+
+      - name: pull event
+        if: github.event_name == 'pull_request'
+        run: echo '${{toJson(github.event)}}}'
