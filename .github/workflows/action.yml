@@ -31,12 +31,31 @@ jobs:
       - name: run build
         run: npm run build
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: install nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: install deps
+        run: npm ci
+
+      - name: run build
+        run: npm run test
+
   # lint -> build
   # bild job 이전에 lint job이 실행되야하ㅓㅁ
   # 순차적으로 실행되야함
+  # 단일 선행작업 -> needs: <job name.
+  # 복수 선행작업 -> needs: [ <job name 1>, ,<job name 2>]
   build:
     runs-on: ubuntu-latest
-    needs: lint
+    needs: [lint, test]
     steps:
       - name: checkout code
         uses: actions/checkout@v4
