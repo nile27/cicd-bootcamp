@@ -1,11 +1,10 @@
-# .github/workflows/auto-issue-on-pr.yml
 name: Auto Issue on PR Open
 on:
   pull_request_target:
     types: [opened, synchronize]
 
 permissions:
-  issues: write # Issue 생성 권한
+  issues: write
   contents: read
 
 jobs:
@@ -30,11 +29,14 @@ jobs:
     needs: detect-template
     runs-on: ubuntu-latest
     steps:
-      - name: Check out PR head
+      # 1) 여기서는 기본(base) repo를 그대로 사용합니다.
+      - name: Check out base repo (upstream)
         uses: actions/checkout@v3
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
+        # ref: '${{ github.event.pull_request.base.ref }}'  # 보통 develop
+
+      # 2) 템플릿 파일이 이 워크스페이스에 있어야 읽힙니다.
+      - name: List ISSUE_TEMPLATE dir for debug
+        run: ls -R .github/ISSUE_TEMPLATE
 
       - name: Create Issue from selected template
         uses: peter-evans/create-issue-from-file@v4
