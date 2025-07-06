@@ -2,7 +2,7 @@ name: Dev To Main PR Workflow
 on:
   pull_request:
     branches:
-      - develop # base: develop <---- feat/*, fix* ...
+      - develop # base: develop <---- feat/*, fix* ..
     types:
       - closed
 jobs:
