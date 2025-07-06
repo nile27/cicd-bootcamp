@@ -49,16 +49,19 @@ jobs:
       - name: Checkout Codes
         uses: actions/checkout@v4
 
-      - name: Create PR
+      - name: Load PR template
+        id: load_pr_template
+        run: |
+          template="$(< .github/PULL_REQUEST_TEMPLATE.md)"
+          # GitHub Actions v3+ 방식으로 출력 설정
+          echo "body<<EOF\n$template\nEOF" >> $GITHUB_OUTPUT
+
+      # 2) 자동 PR 생성
+      - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.CICD }}
           base: main
-          branch: ${{github.ref}} # /head/ref/develop
-          title: ${{github.event.pull_request.title }}
-          body: |
-            ## PR 요약
-            ### 사전 점검 완료
-            - ✅ Linting
-            - ✅ Unit Tests
-            - ✅ Build Process
+          branch: develop
+          title: ${{ github.event.pull_request.title }}
+          body: ${{ steps.load_pr_template.outputs.body }}
