@@ -45,3 +45,34 @@ jobs:
           title: "[Auto] PR #${{ github.event.pull_request.number }} 검증"
           labels: auto-generated
           assignees: ${{ github.event.pull_request.user.login }}
+
+      - name: Add new issue to Project Todo column
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const projectName = 'ci/cd 자동화 example';   // 여기에 본인의 프로젝트 이름
+            const columnName  = 'Todo';                // 여기에 컬럼 이름
+
+            // 1) 레포지토리의 모든 프로젝트 불러오기
+            const { data: projects } = await github.rest.projects.listForRepo({
+              owner: context.repo.owner,
+              repo:  context.repo.repo
+            });
+            const project = projects.find(p => p.name === projectName);
+            if (!project) throw new Error(`Project "${projectName}" not found`);
+
+            // 2) 해당 프로젝트의 컬럼 불러오기
+            const { data: columns } = await github.rest.projects.listColumns({
+              project_id: project.id
+            });
+            const column = columns.find(c => c.name === columnName);
+            if (!column) throw new Error(`Column "${columnName}" not found in project`);
+
+            // 3) 카드 생성 (content_id에 이슈의 database id 사용)
+            const issue = context.payload.issue;
+            await github.rest.projects.createCard({
+              column_id: column.id,
+              content_id: issue.node_id,       // 또는 issue.id
+              content_type: 'Issue'
+            });
