@@ -12,3 +12,10 @@ filters:
       - /documentation/i
     events: [issues, pull_request]
     targets: [title, body]
+  - label: Feature
+    regexs:
+      - /\[Feature\]/i # 제목에 [documentation]
+      - /\bFeature?\b/i # "doc" or "docs"
+      - /Feature/i
+    events: [issues, pull_request]
+    targets: [title, body]
