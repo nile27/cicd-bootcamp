@@ -4,6 +4,11 @@ on:
     paths:
       - "src/**"
     branches: [main, develop]
+
+  pull_request:
+    types: ["opened", "synchronize", "close"]
+    branches: [main]
+
 jobs:
   hello_world: # job의 이름
     runs-on: ubuntu-latest # job을 실행하는 환경
