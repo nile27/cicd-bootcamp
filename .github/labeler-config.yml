@@ -8,3 +8,5 @@ filters:
     regexs:
       - /docs/i
       - /documentation/
+    events: [issues, pull_request]
+    targets: [title, body]
