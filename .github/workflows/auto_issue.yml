@@ -1,6 +1,6 @@
 name: Auto Issue on PR Open
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize]
 
 permissions:
