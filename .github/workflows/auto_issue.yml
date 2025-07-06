@@ -1,7 +1,12 @@
+# .github/workflows/auto-issue-on-pr.yml
 name: Auto Issue on PR Open
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize]
+
+permissions:
+  issues: write # Issue 생성 권한
+  contents: read
 
 jobs:
   detect-template:
@@ -9,31 +14,27 @@ jobs:
     outputs:
       template: ${{ steps.detect.outputs.template }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Detect template type (with debug)
+      - name: Detect template type
         id: detect
         run: |
           title="${{ github.event.pull_request.title }}"
-          echo "📝 PR Title: $title"
-
           template="custom.md"
           if [[ "$title" =~ [bB][uU][gG] ]]; then
             template="bug_report.md"
           elif [[ "$title" =~ [fF][eE][aA][tT][uU][rR][eE] ]]; then
             template="feature_request.md"
           fi
-
-          echo "📄 Selected template: $template"
           echo "template=$template" >> $GITHUB_OUTPUT
 
   create-issue:
     needs: detect-template
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Check out PR head
         uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Create Issue from selected template
         uses: peter-evans/create-issue-from-file@v4
