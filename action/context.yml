@@ -1,0 +1,114 @@
+# 기본 Context 출력
+
+# 저장소 이름, 브랜치 이름, 커밋 해시 출력
+# 이벤트 타입과 실행자 정보 출력
+# 브랜치별 다른 동작
+
+# main 브랜치: "Production 배포 준비" 메시지
+# develop 브랜치: "Staging 배포 준비" 메시지
+# feature 브랜치: "Feature 테스트 준비" 메시지
+# Pull Request 처리
+
+# PR 제목, 번호, 작성자 정보 출력
+# PR에만 실행되는 특별한 단계
+
+name: context
+on:
+  push:
+    branches: ["main", "develop", "feature/*"]
+  pull_request:
+    types: [opened, synchronize, closed]
+    branches: [main]
+
+jobs:
+  Context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 저장소 이름
+        run: echo "${{ github.repository }}"
+      - name: 저장소 이름
+        run: echo "${{ github.ref_name }}"
+      - name: 저장소 이름
+        run: echo "${{ github.sha }}"
+
+      - name: 저장소 내용
+        if: github.event_name == 'push'
+        run: echo "${{toJson(github)}}"
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # main 브랜치: "Production 배포 준비" 메시지
+      # develop 브랜치: "Staging 배포 준비" 메시지
+      # feature 브랜치: "Feature 테스트 준비" 메시지
+      - name: Production test
+        if: github.ref_name == 'main'
+        run: echo "Production 배포 준비"
+
+      - name: Staging test
+        if: github.ref_name == 'develop'
+        run: echo "Staging 배포 준비"
+
+      - name: Feature test
+        if: github.ref_name == 'feature'
+        run: echo "Feature 테스트 준비"
+
+        # PR 제목, 번호, 작성자 정보 출력
+        # PR에만 실행되는 특별한 단계
+      - name: Handle PR
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "PR Title: ${{ github.event.pull_request.title }}"
+          echo "PR Num: ${{ github.event.pull_request.number }}"
+          echo "PR name: ${{ github.event.pull_request.user.login }}"
+
+  exercise2_4_feat:
+    if: startsWith(github.ref_name,'feat/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: install depencies
+        run: npm ci
+
+      - name: feat/* 브랜치는 테스트만 실행
+        run: npm run test
+
+  exercise2_4_develop:
+    if: github.ref_name == 'develop'
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: install depencies
+        run: npm ci
+
+      - name: feat/* 브랜치는 테스트만 실행
+        run: npm run test
+
+      - name: build
+        run: npm run build
+
+      - name: Staging
+        run: echo "Staging deploy..."
+
+  exercise2_4_main:
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: install depencies
+        run: npm ci
+
+      - name: feat/* 브랜치는 테스트만 실행
+        run: npm run test
+
+      - name: build
+        run: npm run build
+
+      - name: Production
+        run: echo "Production deploy..."
