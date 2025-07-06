@@ -1,24 +1,16 @@
 name: Dev To Main PR Workflow
 on:
   pull_request:
+    types: [closed]
     branches:
-      - develop # base: develop <---- feat/*, fix* ...
-    types:
-      - closed
+      - develop
+  workflow_dispatch:
+
 jobs:
   lint-test-build:
     runs-on: ubuntu-latest
-    env:
-      NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
-
+    if: github.event.pull_request.merged == true
     steps:
-      - name: Print Environment Variables
-        run: |
-          echo "Secret ${{secrets.TEST_SECRET}}"
-          echo "NEXT_PUBLIC_SUPABASE_URL ${{ env.NEXT_PUBLIC_SUPABASE_URL }}  "
-          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY ${{ env.NEXT_PUBLIC_SUPABASE_ANON_KEY }}  "
-
       - name: Check Out Code
         uses: actions/checkout@v4
 
@@ -41,24 +33,28 @@ jobs:
         run: npm run build
 
   create-pr:
-    # 선택 사항
     name: Create PR To Main
     needs: lint-test-build
     runs-on: ubuntu-latest
+    if: success()
     steps:
       - name: Checkout Codes
         uses: actions/checkout@v4
+
+      - name: Get Last Commit Meessage
+        id: commit-message
+        run: echo "msg=$(git log -1 --pretty=%B) >> $GITHUB_OUTPUT"
 
       - name: Create PR
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.CICD }}
           base: main
-          branch: ${{github.ref}} # /head/ref/develop
-          title: ${{github.event.pull_request.title }}
+          branch: ${{github.ref}}
+          title: ${{ steps.commit-message.outputs.msg }}
           body: |
             ## PR 요약
             ### 사전 점검 완료
             - ✅ Linting
-            - ✅ Unit Tests
+            - ✅ Unit Tests  
             - ✅ Build Process

@@ -9,10 +9,12 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+.gitignore
 
 # testing
 /coverage
 /action
+/actions
 
 # next.js
 /.next/
