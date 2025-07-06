@@ -6,7 +6,7 @@ on:
       - "hotfix/**"
 
 jobs:
-  main-lint-build-test:
+  feature-lint-build-test:
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
