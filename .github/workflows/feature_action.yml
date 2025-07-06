@@ -1,13 +1,17 @@
 name: Feature/Hotfix Push Work
+
 on:
   push:
     branches:
       - "feature/**"
       - "hotfix/**"
 
+
+
 jobs:
   main-lint-build-test:
     runs-on: ubuntu-latest
+
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
