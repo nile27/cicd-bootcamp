@@ -1,16 +1,19 @@
 name: Feature/Hotfix Push Work
-on: 
+on:
   push:
     branches:
-      - 'feature/**'
-      - 'hotfix/**'
+      - "feature/**"
+      - "hotfix/**"
 
 jobs:
   main-lint-build-test:
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
 
     steps:
-        # 코드 체크 아웃
+      # 코드 체크 아웃
       - name: Check out Code
         uses: actions/checkout@v4
 
@@ -29,7 +32,3 @@ jobs:
         # 빋드 테스트
       - name: Run Build test
         run: npm run build
-
-
-
-
