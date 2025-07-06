@@ -1,10 +1,14 @@
 filters:
   - label: bug
     regexs:
-      - /\bfix\b|bug/
+      - /\[bug\]/i # 제목에 [bug]
+      - /\bfix\b/i
     events: [issues, pull_request]
     targets: [title, comment]
   - label: documentation
     regexs:
-      - /docs/i
-      - /documentation/
+      - /\[documentation\]/i # 제목에 [documentation]
+      - /\bdocs?\b/i # "doc" or "docs"
+      - /documentation/i
+    events: [issues, pull_request]
+    targets: [title, body]
