@@ -1,0 +1,64 @@
+name: Dev To Main PR Workflow
+on:
+  pull_request:
+    branches:
+      - develop # base: develop <---- feat/*, fix* ...
+    types:
+      - closed
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
+
+    steps:
+      - name: Print Environment Variables
+        run: |
+          echo "NEXT_PUBLIC_SUPABASE_URL ${{ env.NEXT_PUBLIC_SUPABASE_URL }}  "
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY ${{ env.NEXT_PUBLIC_SUPABASE_ANON_KEY }}  "
+          echo "Secret ${{secrets.TEST_SECRET}}"
+
+      - name: Check Out Code
+        uses: actions/checkout@v4
+
+        # 선택사항
+      - name: SetUp Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Deps
+        run: npm ci
+
+      - name: Run Linting
+        run: npm run lint
+
+      - name: Run Test
+        run: npm run test
+
+      - name: Run Build
+        run: npm run build
+
+  create-pr:
+    # 선택 사항
+    name: Create PR To Main
+    needs: lint-test-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Codes
+        uses: actions/checkout@v4
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.CICD }}
+          base: main
+          branch: ${{github.ref}} # /head/ref/develop
+          title: ${{github.event.pull_request.title }}
+          body: |
+            ## PR 요약
+            ### 사전 점검 완료
+            - ✅ Linting
+            - ✅ Unit Tests
+            - ✅ Build Process
