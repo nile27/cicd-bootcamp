@@ -6,15 +6,9 @@ on:
       - "feature/**"
       - "hotfix/**"
 
-
-
 jobs:
   feature-lint-build-test:
     runs-on: ubuntu-latest
-
-    env:
-      NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
 
     steps:
       # 코드 체크 아웃

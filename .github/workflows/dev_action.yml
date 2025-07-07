@@ -1,16 +1,15 @@
 name: Feature/Hotfix PR Work
 on:
   pull_request:
-    branches:
-      - develop
-      - main
+    types: [opened]
+    branches: [main, devolop]
 
 jobs:
   main-lint-build-test:
     runs-on: ubuntu-latest
 
     steps:
-        # 코드 체크 아웃
+      # 코드 체크 아웃
       - name: Check out Code
         uses: actions/checkout@v4
 
@@ -29,7 +28,3 @@ jobs:
         # 빋드 테스트
       - name: Run Build test
         run: npm run build
-
-
-
-
