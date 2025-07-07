@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-        # 코드 체크 아웃
+      # 코드 체크 아웃
       - name: Check out Code
         uses: actions/checkout@v4
 
@@ -18,7 +18,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-        # ESLint 스타일 테스트
+        # ESLint 스타일 test
       - name: Run ESLint
         run: npm run lint
 
@@ -26,10 +26,6 @@ jobs:
       - name: Run TS type check
         run: npm run tsc -- --noEmit
 
-        # 빋드 테스트
+        # 빋드 test
       - name: Run Build test
         run: npm run build
-
-
-
-
